@@ -140,10 +140,15 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
         return
       }
 
+      var appIndex = DEMO_APP_IDX.value
+      if (request.hasKey("app_index") && !request.isNull("app_index")) {
+        appIndex = request.getInt("app_index")
+      }
+
       kinAccountContext.sendKinPayment(
         KinAmount(amount),
         KinAccount.Id(destination),
-        KinBinaryMemo.Builder(DEMO_APP_IDX.value)
+        KinBinaryMemo.Builder(appIndex)
           .setTranferType(KinBinaryMemo.TransferType.P2P)
           .build()
           .toKinMemo(),

@@ -14,6 +14,7 @@ export interface SendPaymentRequest {
   destination: string;
   amount: string;
   memo?: string;
+  app_index: number | null;
 }
 
 export interface GenerateKeyPairResult {
