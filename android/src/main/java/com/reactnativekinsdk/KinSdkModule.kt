@@ -2,8 +2,6 @@ package com.reactnativekinsdk
 
 import android.util.Log
 import com.facebook.react.bridge.*
-import com.google.gson.Gson
-import org.json.JSONObject
 import org.kin.sdk.base.KinAccountContext
 import org.kin.sdk.base.KinAccountContextImpl
 import org.kin.sdk.base.KinEnvironment
@@ -16,6 +14,8 @@ import org.kin.sdk.base.tools.Base58
 import org.kin.sdk.base.tools.Optional
 import org.kin.sdk.base.tools.toByteArray
 import org.kin.stellarfork.KeyPair
+import org.kin.stellarfork.codec.Base64
+import java.lang.Exception
 import java.util.*
 
 
@@ -148,9 +148,8 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
           .build()
           .toKinMemo(),
         Optional.empty()
-      ).then({ kinPayment ->
-        val json = JSONObject(Gson().toJson(kinPayment))
-        promise.resolve(Utils.convertJsonToMap(json))
+      ).then({
+        promise.resolve(true)
       }, {
 //      promise.resolve(false)
         promise.reject("Error", it)
@@ -171,7 +170,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
   }
 
   private val testKinEnvironment: KinEnvironment.Agora by lazy {
-    KinEnvironment.Agora.Builder(if (env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)
+    KinEnvironment.Agora.Builder(if(env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)
       .setAppInfoProvider(object : AppInfoProvider {
         override val appInfo: AppInfo =
           AppInfo(

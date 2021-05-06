@@ -55,7 +55,7 @@ export class KinSDKService {
   }
 
   // Submit a payment to the Blockchain
-  submitPayment(secret: string, destination: string, amount: string, memo: string): Promise<object> {
+  submitPayment(secret: string, destination: string, amount: string, memo: string): Promise<boolean> {
     console.log('KinSDKService::submitPayment()', { secret, destination, amount, memo });
 
     // return Promise.resolve(true);

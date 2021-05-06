@@ -23,7 +23,7 @@ export interface GenerateKeyPairResult {
 
 export type CreateNewAccountResult = boolean;
 export type RequestAirdropResult = boolean;
-export type SendPaymentResult = object;
+export type SendPaymentResult = boolean;
 
 export interface RequestAirdropRequest {
   publicKey: string;
