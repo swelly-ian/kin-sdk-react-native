@@ -58,9 +58,25 @@ export class KinSDKService {
   submitPayment(secret: string, destination: string, amount: string, memo: string, app_index: number | null = null): Promise<object> {
     console.log('KinSDKService::submitPayment()', { secret, destination, amount, memo, app_index});
 
-    // return Promise.resolve(true);
-    // TODO 5: Implement KinSdk.sendPayment({ secret, destination, amount, memo })
-    return KinSdk.sendPayment(this.env, { secret, destination, amount, memo, app_index: 1 });
+    // return KinSdk.sendPayment(this.env, { secret, destination, amount, memo, app_index: 1 });
+
+    /**
+     * paymentType: 2 (Spend)
+     */
+    const paymentItems = [
+      {
+        description: 'One Hamburger',
+        amount: 2.00
+      },
+      {
+        description: 'Tip the waitress',
+        amount: 0.50
+      },
+    ];
+    return KinSdk.sendInvoice(this.env, { secret, paymentItems, destination, paymentType: 2, app_index: 0 });
+
+
+
     // return KinSdk.sendPayment(this.env, { secret: "11", destination, amount: "aa", memo });
     // return KinSdk.sendPayment(this.env, { secret: "11", destination1: "32", amount: "aa", memo });
     // return KinSdk.sendPayment(this.env, { secret, destination, amount: "aa", memo });

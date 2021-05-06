@@ -17,6 +17,19 @@ export interface SendPaymentRequest {
   app_index: number | null;
 }
 
+export interface SendInvoiceRequest {
+  secret: string;
+  paymentItems: Array<LineItem>;
+  destination: string;
+  paymentType: number | null;
+  app_index: number | null;
+}
+
+interface LineItem {
+  description: string
+  amount: number
+}
+
 export interface GenerateKeyPairResult {
   secret: string;
   publicKey: string;
@@ -49,6 +62,7 @@ export type KinSdkType = {
     input: ResolveTokenAccountsRequest
   ) => Promise<ResolveTokenAccountsResult>;
   sendPayment: (env: KinEnvironment, input: SendPaymentRequest) => Promise<SendPaymentResult>;
+  sendInvoice: (env: KinEnvironment, input: SendInvoiceRequest) => Promise<SendPaymentResult>;
 };
 
 export const { KinSdk }: { KinSdk: KinSdkType } = NativeModules as any;
