@@ -24,8 +24,8 @@ export class KinSDKService {
     console.log('KinSDKService::createAccount()', secret);
 
     // return Promise.resolve(true);
-    // return KinSdk.createNewAccount(this.env, { secret });
-    return KinSdk.createNewAccount(this.env, { secret: 'Test' });
+    return KinSdk.createNewAccount(this.env, { secret });
+    // return KinSdk.createNewAccount(this.env, { secret: 'Test' });
   }
 
   // Resolve the token accounts of this public key on the Blockchain
