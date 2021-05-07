@@ -81,4 +81,12 @@ export class KinSDKService {
     // return KinSdk.sendPayment(this.env, { secret: "11", destination1: "32", amount: "aa", memo });
     // return KinSdk.sendPayment(this.env, { secret, destination, amount: "aa", memo });
   }
+
+  static watchBalance(env: KinEnvironment, publicKey: string, callback: (balance: object) => void ): void {
+    KinSdk.watchBalance(
+      env,
+      publicKey,
+      callback,
+    );
+  }
 }

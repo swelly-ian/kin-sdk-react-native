@@ -7,12 +7,14 @@ import org.json.JSONObject
 import org.kin.sdk.base.KinAccountContext
 import org.kin.sdk.base.KinAccountContextImpl
 import org.kin.sdk.base.KinEnvironment
+import org.kin.sdk.base.ObservationMode
 import org.kin.sdk.base.models.*
 import org.kin.sdk.base.network.services.AppInfoProvider
 import org.kin.sdk.base.repository.InvoiceRepository
 import org.kin.sdk.base.stellar.models.NetworkEnvironment
 import org.kin.sdk.base.storage.KinFileStorage
 import org.kin.sdk.base.tools.Base58
+import org.kin.sdk.base.tools.DisposeBag
 import org.kin.sdk.base.tools.Optional
 import org.kin.sdk.base.tools.toByteArray
 import org.kin.stellarfork.KeyPair
@@ -27,6 +29,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
     KinAccount.Id("GDV4TKOCDBHB3XGCKAXWYETQRIN4RTJKSD6FQV43E2AUHORR56B4YDC4")
 
   var env: String = "Test"
+  private val lifecycle = DisposeBag()
 
     override fun getName(): String {
         return "KinSdk"
@@ -115,6 +118,22 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
     } catch (e: Exception) {
       promise.reject("Error", "invalid publicKey")
     }
+  }
+
+  @ReactMethod
+  fun watchBalance(env: String, publicKey: String, callback: Callback) {
+    this.env = env
+    val account = kinAccount(publicKey)
+
+    val context = KinAccountContext.Builder(testKinEnvironment)
+      .useExistingAccount(account)
+      .build()
+
+    context.observeBalance(ObservationMode.Passive)
+      .add { kinBalance: KinBalance ->
+        val json = JSONObject(Gson().toJson(kinBalance))
+        callback.invoke(Utils.convertJsonToMap(json))
+      }.disposedBy(lifecycle)
 
   }
 
