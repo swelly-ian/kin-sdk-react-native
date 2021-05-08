@@ -63,7 +63,7 @@ export class KinSDKService {
     /**
      * paymentType: 2 (Spend)
      */
-    const paymentItems = [
+    const lineItems = [
       {
         description: 'One Hamburger',
         amount: 2.00
@@ -73,7 +73,7 @@ export class KinSDKService {
         amount: 0.50
       },
     ];
-    return KinSdk.sendInvoice(this.env, { secret, paymentItems, destination, paymentType: 2, app_index: 0 });
+    return KinSdk.sendInvoice(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
 
 
 

@@ -19,15 +19,15 @@ export interface SendPaymentRequest {
   destination: string;
   amount: string;
   memo?: string;
-  app_index: number | null;
+  appIndex: number | null;
 }
 
 export interface SendInvoiceRequest {
   secret: string;
-  paymentItems: Array<LineItem>;
+  lineItems: Array<LineItem>;
   destination: string;
   paymentType: number | null;
-  app_index: number | null;
+  appIndex: number | null;
 }
 
 interface LineItem {
