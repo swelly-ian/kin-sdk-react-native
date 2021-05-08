@@ -14,18 +14,18 @@ class KinSdk: NSObject {
         resolve(a*b)
     }
     
-    @objc(generateRandomKeyPair:withRejecter:)
-    func generateRandomKeyPair(resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
-        do {
-            let key = try KeyPair.generateRandomKeyPair()
-            let result: NSMutableDictionary = [:]
-            result["secret"] = key.secretSeed
-            result["publicKey"] = key.accountId
-            resolve(result)
-        } catch {
-            reject("no_events", "There were no events", error)
-        }
-    }
+//    @objc(generateRandomKeyPair:withRejecter:)
+//    func generateRandomKeyPair(resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
+//        do {
+//            let key = try KeyPair.generateRandomKeyPair()
+//            let result: NSMutableDictionary = [:]
+//            result["secret"] = key.secretSeed
+//            result["publicKey"] = key.asPublicKey().accountId
+//            resolve(result)
+//        } catch {
+//            reject("no_events", "There were no events", error)
+//        }
+//    }
     
 //    @objc(createNewAccount:withResolver:withRejecter:)
 //    func createNewAccount(secretSeed: String, resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {

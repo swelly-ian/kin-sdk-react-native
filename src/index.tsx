@@ -69,7 +69,7 @@ export type KinSdkType = {
   sendPayment: (env: KinEnvironment, input: SendPaymentRequest) => Promise<SendPaymentResult>;
   sendInvoice: (env: KinEnvironment, input: SendInvoiceRequest) => Promise<SendPaymentResult>;
 
-  watchBalance: (env: KinEnvironment, publicKey: string, callback: (balance: object) => void) => void;
+  // watchBalance: (env: KinEnvironment, publicKey: string, callback: (balance: object) => void) => void;
 };
 
 export const { KinSdk }: { KinSdk: KinSdkType } = NativeModules as any;

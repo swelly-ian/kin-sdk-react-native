@@ -8,8 +8,17 @@ RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+//RCT_EXTERN_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
+//                 withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXPORT_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    [KinSDKUtils generateRandomKeyPair: ^(NSDictionary* success) {
+        resolve (success);
+    } : ^(NSString *code, NSString *event, NSError *error) {
+        reject (code, event, error);
+    }];
+}
 
 RCT_EXPORT_METHOD(createNewAccount: (NSString *)env
                   account: (NSDictionary *)account

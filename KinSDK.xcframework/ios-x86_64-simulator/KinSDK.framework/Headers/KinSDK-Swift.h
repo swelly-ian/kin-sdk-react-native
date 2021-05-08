@@ -220,12 +220,13 @@ SWIFT_CLASS("_TtC6KinSDK18HomeViewController")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class NSDictionary;
-@class NSError;
 @class NSMutableDictionary;
+@class NSError;
+@class NSDictionary;
 
 SWIFT_CLASS_NAMED("KinSDKUtils")
 @interface KinSDKUtils : NSObject
++ (void)generateRandomKeyPair:(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)createAccount:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(BOOL))resolve :(void (^ _Nonnull)(NSError * _Nonnull))reject;
 + (void)sendPayment:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)request :(void (^ _Nonnull)(BOOL))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)getBalance:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;

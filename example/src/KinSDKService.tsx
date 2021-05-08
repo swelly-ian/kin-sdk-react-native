@@ -83,10 +83,10 @@ export class KinSDKService {
   }
 
   static watchBalance(env: KinEnvironment, publicKey: string, callback: (balance: object) => void ): void {
-    KinSdk.watchBalance(
-      env,
-      publicKey,
-      callback,
-    );
+    // KinSdk.watchBalance(
+    //   env,
+    //   publicKey,
+    //   callback,
+    // );
   }
 }
