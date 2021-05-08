@@ -166,7 +166,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
       kinAccountContext.sendKinPayment(
         KinAmount(amount),
-        KinAccount.Id(destination),
+        kinAccount(destination),
         KinBinaryMemo.Builder(appIndex)
           .setTranferType(KinBinaryMemo.TransferType.P2P)
           .build()
@@ -197,8 +197,8 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       }
 
       var appIndex = DEMO_APP_IDX.value
-      if (request.hasKey("app_index") && !request.isNull("app_index")) {
-        appIndex = request.getInt("app_index")
+      if (request.hasKey("appIndex") && !request.isNull("appIndex")) {
+        appIndex = request.getInt("appIndex")
       }
 
       val destination = request.getString("destination") ?: ""
@@ -208,7 +208,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       }
 
       val kinAccount: KinAccount.Id = kinAccount(destination)
-      val requestItems = request.getArray("paymentItems")!!
+      val requestItems = request.getArray("lineItems")!!
 
       val paymentItems = mutableListOf<Pair<String, Double>>()
       for (i in 0 until requestItems.size()) {
