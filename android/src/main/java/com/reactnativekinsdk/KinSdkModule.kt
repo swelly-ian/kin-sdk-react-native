@@ -2,6 +2,8 @@ package com.reactnativekinsdk
 
 import android.util.Log
 import com.facebook.react.bridge.*
+import com.google.gson.Gson
+import org.json.JSONObject
 import org.kin.sdk.base.KinAccountContext
 import org.kin.sdk.base.KinAccountContextImpl
 import org.kin.sdk.base.KinEnvironment
@@ -10,11 +12,10 @@ import org.kin.sdk.base.network.services.AppInfoProvider
 import org.kin.sdk.base.repository.InvoiceRepository
 import org.kin.sdk.base.stellar.models.NetworkEnvironment
 import org.kin.sdk.base.storage.KinFileStorage
+import org.kin.sdk.base.tools.Base58
 import org.kin.sdk.base.tools.Optional
 import org.kin.sdk.base.tools.toByteArray
 import org.kin.stellarfork.KeyPair
-import org.kin.stellarfork.codec.Base64
-import java.lang.Exception
 import java.util.*
 
 
@@ -45,7 +46,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
     val key = KeyPair.random()
     val resultData = WritableNativeMap()
     resultData.putString("secret", String(key.secretSeed))
-    resultData.putString("publicKey", key.accountId)
+    resultData.putString("publicKey", Base58.encode(key.asPublicKey().value))
 
     promise.resolve(resultData)
   }
@@ -57,9 +58,11 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       val secret = key.getString("secret")!!
       this.env = env
 
-      KinAccountContext.Builder(testKinEnvironment)
+      val kin = KinAccountContext.Builder(testKinEnvironment)
         .importExistingPrivateKey(Key.PrivateKey(secret))
         .build()
+
+      kin.accountId.base58Encode()
 
       promise.resolve(true)
     } catch (e: Exception) {
@@ -72,7 +75,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
   fun resolveTokenAccounts(env: String, key: ReadableMap, promise: Promise) {
     try {
       val publicKey = key.getString("publicKey")!!
-      val account = KinAccount.Id(publicKey)
+      val account = kinAccount(publicKey)
       this.env = env
 
       val accountContext = KinAccountContext.Builder(testKinEnvironment)
@@ -99,7 +102,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
       val amount: String = request.getString("amount") ?: "1"
       val publicKey: String = request.getString("publicKey") ?: ""
-      val account = KinAccount.Id(publicKey)
+      val account = kinAccount(publicKey)
 
       val kinAccountContext = KinAccountContext.Builder(testKinEnvironment)
         .useExistingAccount(account)
@@ -139,14 +142,15 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
       kinAccountContext.sendKinPayment(
         KinAmount(amount),
-        KinAccount.Id(destination),
+        kinAccount(destination),
         KinBinaryMemo.Builder(DEMO_APP_IDX.value)
           .setTranferType(KinBinaryMemo.TransferType.P2P)
           .build()
           .toKinMemo(),
         Optional.empty()
-      ).then({
-        promise.resolve(true)
+      ).then({ kinPayment ->
+        val json = JSONObject(Gson().toJson(kinPayment))
+        promise.resolve(Utils.convertJsonToMap(json))
       }, {
 //      promise.resolve(false)
         promise.reject("Error", it)
@@ -157,8 +161,17 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
   }
 
+  private fun kinAccount(accountId: String): KinAccount.Id {
+    //resolve between Solana and Stellar format addresses
+    return try {
+      KinAccount.Id(Base58.decode(accountId))//Solana format
+    } catch (ex: Exception) {
+      KinAccount.Id(accountId) //Stellar format
+    }
+  }
+
   private val testKinEnvironment: KinEnvironment.Agora by lazy {
-    KinEnvironment.Agora.Builder(if(env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)
+    KinEnvironment.Agora.Builder(if (env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)
       .setAppInfoProvider(object : AppInfoProvider {
         override val appInfo: AppInfo =
           AppInfo(
