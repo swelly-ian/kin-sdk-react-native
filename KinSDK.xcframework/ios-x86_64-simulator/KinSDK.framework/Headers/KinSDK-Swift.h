@@ -229,6 +229,7 @@ SWIFT_CLASS_NAMED("KinSDKUtils")
 + (void)generateRandomKeyPair:(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)createAccount:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(BOOL))resolve :(void (^ _Nonnull)(NSError * _Nonnull))reject;
 + (void)sendPayment:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)request :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
++ (void)sendInvoice:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)request :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)getBalance:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)fundAccount:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(BOOL))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;

@@ -55,6 +55,18 @@ RCT_EXPORT_METHOD(sendPayment: (NSString *)env
     }];
 }
 
+RCT_EXPORT_METHOD(sendInvoice: (NSString *)env
+                  request: (NSDictionary *)request
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+
+    [KinSDKUtils sendInvoice: env : request : ^(NSDictionary* success) {
+        resolve (success);
+    } : ^(NSString *code, NSString *event, NSError *error) {
+        reject (code, event, error);
+    }];
+}
+
 RCT_EXPORT_METHOD(requestAirdrop: (NSString *)env
                   request: (NSDictionary *)request
                   withResolver:(RCTPromiseResolveBlock)resolve
