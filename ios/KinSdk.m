@@ -48,8 +48,8 @@ RCT_EXPORT_METHOD(sendPayment: (NSString *)env
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
 
-    [KinSDKUtils sendPayment: env : request : ^(bool success) {
-        resolve (@(success));
+    [KinSDKUtils sendPayment: env : request : ^(NSDictionary* success) {
+        resolve (success);
     } : ^(NSString *code, NSString *event, NSError *error) {
         reject (code, event, error);
     }];

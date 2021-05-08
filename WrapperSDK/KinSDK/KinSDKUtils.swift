@@ -77,7 +77,7 @@ public class KinSDKUtils: NSObject {
     }
     
     @objc(sendPayment::::)
-    public static func sendPayment(env: String, request: NSDictionary, resolve: @escaping (Bool) -> Void, reject: @escaping (String, String, NSError) -> Void) {
+    public static func sendPayment(env: String, request: NSDictionary, resolve: @escaping (NSMutableDictionary) -> Void, reject: @escaping (String, String, NSError) -> Void) {
         
         do {
             let key = try KinAccount.Key(secretSeed: request["secret"] as! String)
@@ -93,10 +93,10 @@ public class KinSDKUtils: NSObject {
                 return
             }
             
-            let item = KinPaymentItem(amount: amount, destAccountId: request["destination"] as! String)
+            let item = KinPaymentItem(amount: amount, destAccountId: kinAccount(request["destination"] as! String))
             accountContext.sendKinPayment(item, memo: KinMemo(text: request["memo"] as? String ?? ""))
-                .then(on: .main) {_ in
-                    resolve(true)
+                .then(on: .main) {payment in
+                    resolve((toDict(payment) as NSDictionary).mutableCopy() as! NSMutableDictionary)
                 }
                 .catch(on: .main) {error in
                     reject("Error", "invalid destination", error as NSError)
@@ -173,6 +173,15 @@ public class KinSDKUtils: NSObject {
 //        }
         
         
+    }
+    
+    static func toDict(_ payment: KinPayment) -> [String:Any] {
+        let mirror = Mirror(reflecting: payment)
+        let dict = Dictionary(uniqueKeysWithValues: mirror.children.lazy.map({ (label:String?, value:Any) -> (String, Any)? in
+            guard let label = label else { return nil }
+            return (label, value)
+        }).compactMap { $0 })
+        return dict
     }
     
 }
