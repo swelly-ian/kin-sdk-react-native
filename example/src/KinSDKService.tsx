@@ -75,8 +75,6 @@ export class KinSDKService {
     ];
     return KinSdk.sendInvoice(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
 
-
-
     // return KinSdk.sendPayment(this.env, { secret: "11", destination, amount: "aa", memo });
     // return KinSdk.sendPayment(this.env, { secret: "11", destination1: "32", amount: "aa", memo });
     // return KinSdk.sendPayment(this.env, { secret, destination, amount: "aa", memo });
