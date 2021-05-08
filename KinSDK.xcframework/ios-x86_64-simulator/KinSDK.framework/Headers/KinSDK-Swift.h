@@ -232,6 +232,7 @@ SWIFT_CLASS_NAMED("KinSDKUtils")
 + (void)sendInvoice:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)request :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)getBalance:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
 + (void)fundAccount:(NSString * _Nonnull)env :(NSDictionary * _Nonnull)account :(void (^ _Nonnull)(BOOL))resolve :(void (^ _Nonnull)(NSString * _Nonnull, NSString * _Nonnull, NSError * _Nonnull))reject;
++ (void)watchBalance:(NSString * _Nonnull)env :(NSString * _Nonnull)publicKey :(void (^ _Nonnull)(NSMutableDictionary * _Nonnull))callback;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 

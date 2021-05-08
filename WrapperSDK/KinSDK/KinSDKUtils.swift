@@ -107,6 +107,51 @@ public class KinSDKUtils: NSObject {
         }
     }
     
+    @objc(sendInvoice::::)
+    public static func sendInvoice(env: String, request: NSDictionary, resolve: @escaping (NSMutableDictionary) -> Void, reject: @escaping (String, String, NSError) -> Void) {
+        
+        do {
+            let key = try KinAccount.Key(secretSeed: request["secret"] as! String)
+            
+            let env = getEnv(env: env)
+            let accountContext = try KinAccountContext
+                .Builder(env: env)
+                .importExistingPrivateKey(key)
+                .build()
+            
+            var appIndex: AppIndex = .init(value: 0)
+            if let index = request["appIndex"] as? Int {
+                appIndex = .init(value: UInt16(index))
+            }
+            
+            let requestItems = request["paymentItems"] as! NSArray
+            var lineItems: [LineItem] = []
+            for item in requestItems {
+                let requestItem = item as! [String: Any]
+                let itemDes = requestItem["description"] as! String
+                let itemAmount = requestItem["amount"] as! Double
+                guard let amount = Kin(string: String(itemAmount)) else
+                {
+                    reject("Error", "invalid amount", NSError())
+                    return
+                }
+                lineItems.append(try LineItem(title: itemDes, amount: amount))
+            }
+            
+            accountContext.payInvoice(processingAppIdx: appIndex, destinationAccount: kinAccount(request["destination"] as! String), invoice: try Invoice(lineItems: lineItems))
+                .then(on: .main) {payment in
+                    resolve((toDict(payment) as NSDictionary).mutableCopy() as! NSMutableDictionary)
+                }
+                .catch(on: .main) {error in
+                    reject("Error", "invalid destination", error as NSError)
+                }
+                
+            
+        } catch {
+            reject("Error", "invalid input data", error as NSError)
+        }
+    }
+    
     @objc(getBalance::::)
     public static func getBalance(env: String, account: NSDictionary, resolve: @escaping (NSMutableDictionary) -> Void, reject: @escaping (String, String, NSError) -> Void) {
         let env = getEnv(env: env)
@@ -175,8 +220,35 @@ public class KinSDKUtils: NSObject {
         
     }
     
+    @objc(watchBalance:::)
+    public static func watchBalance(env: String, publicKey: String, callback: @escaping (NSMutableDictionary) -> Void) {
+        
+        let key = kinAccount(publicKey)
+        let env = getEnv(env: env)
+        
+        let accountContext = KinAccountContext
+            .Builder(env: env)
+            .useExistingAccount(key)
+            .build()
+        
+        accountContext.observeBalance(mode: .active)
+            .subscribe { balance in
+                callback((balanceToDict(balance) as NSDictionary).mutableCopy() as! NSMutableDictionary)
+            }
+        
+    }
+    
     static func toDict(_ payment: KinPayment) -> [String:Any] {
         let mirror = Mirror(reflecting: payment)
+        let dict = Dictionary(uniqueKeysWithValues: mirror.children.lazy.map({ (label:String?, value:Any) -> (String, Any)? in
+            guard let label = label else { return nil }
+            return (label, value)
+        }).compactMap { $0 })
+        return dict
+    }
+    
+    static func balanceToDict(_ balance: KinBalance) -> [String:Any] {
+        let mirror = Mirror(reflecting: balance)
         let dict = Dictionary(uniqueKeysWithValues: mirror.children.lazy.map({ (label:String?, value:Any) -> (String, Any)? in
             guard let label = label else { return nil }
             return (label, value)

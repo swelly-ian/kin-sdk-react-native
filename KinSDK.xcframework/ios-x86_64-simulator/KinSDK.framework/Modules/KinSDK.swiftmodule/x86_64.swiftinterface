@@ -38,6 +38,7 @@ extension KinWalletDemoViewController : UIKit.UITableViewDelegate {
   @objc(sendInvoice::::) public static func sendInvoice(env: Swift.String, request: Foundation.NSDictionary, resolve: @escaping (Foundation.NSMutableDictionary) -> Swift.Void, reject: @escaping (Swift.String, Swift.String, Foundation.NSError) -> Swift.Void)
   @objc(getBalance::::) public static func getBalance(env: Swift.String, account: Foundation.NSDictionary, resolve: @escaping (Foundation.NSMutableDictionary) -> Swift.Void, reject: @escaping (Swift.String, Swift.String, Foundation.NSError) -> Swift.Void)
   @objc(fundAccount::::) public static func fundAccount(env: Swift.String, account: Foundation.NSDictionary, resolve: @escaping (Swift.Bool) -> Swift.Void, reject: @escaping (Swift.String, Swift.String, Foundation.NSError) -> Swift.Void)
+  @objc(watchBalance:::) public static func watchBalance(env: Swift.String, publicKey: Swift.String, callback: @escaping (Foundation.NSMutableDictionary) -> Swift.Void)
   @objc deinit
   @objc override dynamic public init()
 }

@@ -79,4 +79,13 @@ RCT_EXPORT_METHOD(requestAirdrop: (NSString *)env
     }];
 }
 
+RCT_EXPORT_METHOD(watchBalance: (NSString *)env
+                  publicKey: (NSString *)publicKey
+                  callback:(RCTResponseSenderBlock)callback) {
+
+    [KinSDKUtils watchBalance: env : publicKey : ^(NSDictionary* balance) {
+        callback (@[balance]);
+    }];
+}
+
 @end
