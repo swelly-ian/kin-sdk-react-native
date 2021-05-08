@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/KinSDK-Swift.h</key>
 		<data>
-		KnMDBQdYPzdCyrq+d/z9ZycKp18=
+		ievyFqpaXCprTXM/L2IbxW9kTAw=
 		</data>
 		<key>Headers/KinSDK.h</key>
 		<data>
@@ -18,11 +18,11 @@
 		</data>
 		<key>Modules/KinSDK.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		y4/x2XwuipzhuJpl0iLWnfq/JGw=
+		jdDWhqDKssLgp3VDv51soHk3odY=
 		</data>
 		<key>Modules/KinSDK.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<data>
-		y4/x2XwuipzhuJpl0iLWnfq/JGw=
+		jdDWhqDKssLgp3VDv51soHk3odY=
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
@@ -30,11 +30,11 @@
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		zwMms7i5R7sCwiTwAu0+qvZEgKk=
+		QoKscxN1Jv2Aeb8oZOdvFKXRVNQ=
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		y9g3jP10xOy2KUUL5l+KHgVMAgo=
+		fJU+/yZlhLpotqwKpSx1lUlH3Ho=
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -42,11 +42,11 @@
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		zwMms7i5R7sCwiTwAu0+qvZEgKk=
+		QoKscxN1Jv2Aeb8oZOdvFKXRVNQ=
 		</data>
 		<key>Modules/KinSDK.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		y9g3jP10xOy2KUUL5l+KHgVMAgo=
+		fJU+/yZlhLpotqwKpSx1lUlH3Ho=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -59,7 +59,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			CCGaEqD6PWmzo7/wNNRXdxKrmURinfg0p27chL/z2kE=
+			Th4rsufTPyv6sW1pHsINJ1QNs+kfX9W5LAYdGGiVcL0=
 			</data>
 		</dict>
 		<key>Headers/KinSDK.h</key>
@@ -73,14 +73,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Ahfyd2ZeWvjj3WCvOcyTHwH0d47fZtAVRrULHfLJOCQ=
+			kDa1L4mOrEYMxRq8aYcpAEk8RWjIFhuVU03+U06eHao=
 			</data>
 		</dict>
 		<key>Modules/KinSDK.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Ahfyd2ZeWvjj3WCvOcyTHwH0d47fZtAVRrULHfLJOCQ=
+			kDa1L4mOrEYMxRq8aYcpAEk8RWjIFhuVU03+U06eHao=
 			</data>
 		</dict>
 		<key>Modules/KinSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
@@ -94,14 +94,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			k4lGd2mpFCWKEMLSveyPOiEEAE7RyuP9Zn8MwB6Y9xQ=
+			qgigPMYtqanOkV8ngS1WppfaPMR31fmojove/oeeS4Y=
 			</data>
 		</dict>
 		<key>Modules/KinSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			SF04Fkw5aCrxFQDjGmcUGw493Pm8CpsDB+QV7Jq5pmU=
+			qnigd7CgWMRfW66Gv+0YxeQPnQ4HH2Zk5bP3gh7RdFw=
 			</data>
 		</dict>
 		<key>Modules/KinSDK.swiftmodule/arm64.swiftdoc</key>
@@ -115,14 +115,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			k4lGd2mpFCWKEMLSveyPOiEEAE7RyuP9Zn8MwB6Y9xQ=
+			qgigPMYtqanOkV8ngS1WppfaPMR31fmojove/oeeS4Y=
 			</data>
 		</dict>
 		<key>Modules/KinSDK.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			SF04Fkw5aCrxFQDjGmcUGw493Pm8CpsDB+QV7Jq5pmU=
+			qnigd7CgWMRfW66Gv+0YxeQPnQ4HH2Zk5bP3gh7RdFw=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
