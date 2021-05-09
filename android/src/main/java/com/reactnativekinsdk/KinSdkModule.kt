@@ -7,12 +7,14 @@ import org.json.JSONObject
 import org.kin.sdk.base.KinAccountContext
 import org.kin.sdk.base.KinAccountContextImpl
 import org.kin.sdk.base.KinEnvironment
+import org.kin.sdk.base.ObservationMode
 import org.kin.sdk.base.models.*
 import org.kin.sdk.base.network.services.AppInfoProvider
 import org.kin.sdk.base.repository.InvoiceRepository
 import org.kin.sdk.base.stellar.models.NetworkEnvironment
 import org.kin.sdk.base.storage.KinFileStorage
 import org.kin.sdk.base.tools.Base58
+import org.kin.sdk.base.tools.DisposeBag
 import org.kin.sdk.base.tools.Optional
 import org.kin.sdk.base.tools.toByteArray
 import org.kin.stellarfork.KeyPair
@@ -27,6 +29,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
     KinAccount.Id("GDV4TKOCDBHB3XGCKAXWYETQRIN4RTJKSD6FQV43E2AUHORR56B4YDC4")
 
   var env: String = "Test"
+  private val lifecycle = DisposeBag()
 
     override fun getName(): String {
         return "KinSdk"
@@ -53,7 +56,6 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
   @ReactMethod
   fun createNewAccount(env: String, key: ReadableMap, promise: Promise) {
-//    val keyPair = KeyPair.random()
     try {
       val secret = key.getString("secret")!!
       this.env = env
@@ -115,6 +117,22 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
     } catch (e: Exception) {
       promise.reject("Error", "invalid publicKey")
     }
+  }
+
+  @ReactMethod
+  fun watchBalance(env: String, publicKey: String, callback: Callback) {
+    this.env = env
+    val account = kinAccount(publicKey)
+
+    val context = KinAccountContext.Builder(testKinEnvironment)
+      .useExistingAccount(account)
+      .build()
+
+    context.observeBalance(ObservationMode.Passive)
+      .add { kinBalance: KinBalance ->
+        val json = JSONObject(Gson().toJson(kinBalance))
+        callback.invoke(Utils.convertJsonToMap(json))
+      }.disposedBy(lifecycle)
 
   }
 
@@ -133,17 +151,21 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
         promise.reject("Error", "invalid destination")
         return
       }
-//    val dest = Base64.decodeBase64(destination)!!
 
       if (amount.isEmpty()) {
         promise.reject("Error", "invalid amount")
         return
       }
 
+      var appIndex = DEMO_APP_IDX.value
+      if (request.hasKey("app_index") && !request.isNull("app_index")) {
+        appIndex = request.getInt("app_index")
+      }
+
       kinAccountContext.sendKinPayment(
         KinAmount(amount),
         kinAccount(destination),
-        KinBinaryMemo.Builder(DEMO_APP_IDX.value)
+        KinBinaryMemo.Builder(appIndex)
           .setTranferType(KinBinaryMemo.TransferType.P2P)
           .build()
           .toKinMemo(),
@@ -152,13 +174,108 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
         val json = JSONObject(Gson().toJson(kinPayment))
         promise.resolve(Utils.convertJsonToMap(json))
       }, {
-//      promise.resolve(false)
         promise.reject("Error", it)
       })
     } catch (e: Throwable) {
       promise.reject("Error", "invalid input data")
     }
 
+  }
+
+  @ReactMethod
+  fun sendInvoice(env: String, request: ReadableMap, promise: Promise) {
+    try {
+      this.env = env
+
+      val secret = request.getString("secret")!!
+      var paymentType: KinBinaryMemo.TransferType = KinBinaryMemo.TransferType.Spend
+      if (request.hasKey("paymentType") && request.isNull("paymentType")) {
+        paymentType = KinBinaryMemo.TransferType.fromValue(request.getInt("paymentType"))
+      }
+
+      var appIndex = DEMO_APP_IDX.value
+      if (request.hasKey("appIndex") && !request.isNull("appIndex")) {
+        appIndex = request.getInt("appIndex")
+      }
+
+      val destination = request.getString("destination") ?: ""
+      if (destination.isEmpty()) {
+        promise.reject("Error", "invalid destination")
+        return
+      }
+
+      val kinAccount: KinAccount.Id = kinAccount(destination)
+      val requestItems = request.getArray("lineItems")!!
+
+      val paymentItems = mutableListOf<Pair<String, Double>>()
+      for (i in 0 until requestItems.size()) {
+        requestItems.getMap(i)?.let { item ->
+          val itemDescription = item.getString("description")!!
+          val itemAmount = item.getDouble("amount")
+          paymentItems.add(Pair(itemDescription, itemAmount))
+        }
+      }
+
+      val invoice = buildInvoice(paymentItems)
+      val amount = invoiceTotal(paymentItems)
+
+      val context = KinAccountContext.Builder(testKinEnvironment)
+        .importExistingPrivateKey(Key.PrivateKey(secret))
+        .build()
+
+      context.sendKinPayment(
+        KinAmount(amount),
+        kinAccount,
+        buildMemo(invoice, paymentType, appIndex),
+        Optional.of(invoice)
+      )
+        .then({ payment ->
+          val json = JSONObject(Gson().toJson(payment))
+          promise.resolve(Utils.convertJsonToMap(json))
+        }) { error ->
+          promise.reject("Error", error)
+        }
+
+    } catch (e: Throwable) {
+      promise.reject("Error", "invalid input data")
+    }
+  }
+
+  private fun buildInvoice(paymentItems: List<Pair<String, Double>>): Invoice {
+
+    val invoiceBuilder = Invoice.Builder()
+
+    paymentItems.forEach {
+      invoiceBuilder.addLineItems(
+        listOf(
+          LineItem.Builder(it.first, KinAmount(it.second)).build()
+        )
+      )
+    }
+
+    return invoiceBuilder.build()
+  }
+
+  private fun invoiceTotal(paymentItems: List<Pair<String, Double>>): Double {
+    var total = 0.0
+    paymentItems.forEach {
+      total += it.second
+    }
+
+    return total
+  }
+
+  private fun buildMemo(
+    invoice: Invoice,
+    transferType: KinBinaryMemo.TransferType,
+    appIndex: Int
+  ): KinMemo {
+    val memo = KinBinaryMemo.Builder(appIndex).setTranferType(transferType)
+    val invoiceList = InvoiceList.Builder().addInvoice(invoice).build()
+
+    memo.setForeignKey(invoiceList.id.invoiceHash.decode())
+
+    return memo.build().toKinMemo()
   }
 
   private fun kinAccount(accountId: String): KinAccount.Id {
@@ -169,6 +286,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       KinAccount.Id(accountId) //Stellar format
     }
   }
+
 
   private val testKinEnvironment: KinEnvironment.Agora by lazy {
     KinEnvironment.Agora.Builder(if (env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)

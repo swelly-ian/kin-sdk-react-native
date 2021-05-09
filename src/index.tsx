@@ -9,11 +9,30 @@ export interface CreateNewAccountRequest {
   secret: string;
 }
 
+interface WatchBalanceInput {
+  publicKey: string;
+  callback: (balance: object) => void;
+}
+
 export interface SendPaymentRequest {
   secret: string;
   destination: string;
   amount: string;
   memo?: string;
+  appIndex: number | null;
+}
+
+export interface SendInvoiceRequest {
+  secret: string;
+  lineItems: Array<LineItem>;
+  destination: string;
+  paymentType: number | null;
+  appIndex: number | null;
+}
+
+interface LineItem {
+  description: string
+  amount: number
 }
 
 export interface GenerateKeyPairResult {
@@ -48,6 +67,9 @@ export type KinSdkType = {
     input: ResolveTokenAccountsRequest
   ) => Promise<ResolveTokenAccountsResult>;
   sendPayment: (env: KinEnvironment, input: SendPaymentRequest) => Promise<SendPaymentResult>;
+  sendInvoice: (env: KinEnvironment, input: SendInvoiceRequest) => Promise<SendPaymentResult>;
+
+  watchBalance: (env: KinEnvironment, publicKey: string, callback: (balance: object) => void) => void;
 };
 
 export const { KinSdk }: { KinSdk: KinSdkType } = NativeModules as any;

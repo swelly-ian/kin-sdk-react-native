@@ -61,7 +61,7 @@ export const AccountList: VFC = () => {
     // These values will come from a Form
     // const destination = "HdVcmxkZiSKhQ4BELUzz7EnxcrB9TMRZHcGg5CcaqbvA";
     // const destination = 'Don8L4DTVrUrRAcVTsFoCRqei5Mokde3CV3K9Ut4nAGZ';
-    const destination = 'GD3RIQOQFRV6SBALVVSR3YGLQHWZA6HZMSODR2ZLKWIRLKFBLQ7AH3EC';
+    const destination = 'AtfVfhHchSM9VKvtdf6wsjkheQ97EpnWWHDruVBC4RSi';
     const amount = '2';
     const memo = 'Test Memo!';
 
@@ -75,6 +75,14 @@ export const AccountList: VFC = () => {
     if (!accounts) {
       db.getAccounts().then(setAccounts);
     }
+
+    KinSDKService.watchBalance(KinEnvironment.Test,
+      "EGuup74bh7gCKGpHHt9UDyc8Ee2KHXNz1wvMr122Jd8Z",
+      (balance) => {
+        console.log('Balance changed for EGuup74bh7gCKGpHHt9UDyc8Ee2KHXNz1wvMr122Jd8Z:', balance)
+      }
+    )
+
   }, [accounts]);
 
   return (

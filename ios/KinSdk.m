@@ -8,8 +8,17 @@ RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+//RCT_EXTERN_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
+//                 withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXPORT_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    [KinSDKUtils generateRandomKeyPair: ^(NSDictionary* success) {
+        resolve (success);
+    } : ^(NSString *code, NSString *event, NSError *error) {
+        reject (code, event, error);
+    }];
+}
 
 RCT_EXPORT_METHOD(createNewAccount: (NSString *)env
                   account: (NSDictionary *)account
@@ -39,8 +48,20 @@ RCT_EXPORT_METHOD(sendPayment: (NSString *)env
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
 
-    [KinSDKUtils sendPayment: env : request : ^(bool success) {
-        resolve (@(success));
+    [KinSDKUtils sendPayment: env : request : ^(NSDictionary* success) {
+        resolve (success);
+    } : ^(NSString *code, NSString *event, NSError *error) {
+        reject (code, event, error);
+    }];
+}
+
+RCT_EXPORT_METHOD(sendInvoice: (NSString *)env
+                  request: (NSDictionary *)request
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+
+    [KinSDKUtils sendInvoice: env : request : ^(NSDictionary* success) {
+        resolve (success);
     } : ^(NSString *code, NSString *event, NSError *error) {
         reject (code, event, error);
     }];
@@ -55,6 +76,15 @@ RCT_EXPORT_METHOD(requestAirdrop: (NSString *)env
         resolve (@(success));
     } : ^(NSString *code, NSString *event, NSError *error) {
         reject (code, event, error);
+    }];
+}
+
+RCT_EXPORT_METHOD(watchBalance: (NSString *)env
+                  publicKey: (NSString *)publicKey
+                  callback:(RCTResponseSenderBlock)callback) {
+
+    [KinSDKUtils watchBalance: env : publicKey : ^(NSDictionary* balance) {
+        callback (@[balance]);
     }];
 }
 
