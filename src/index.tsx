@@ -9,11 +9,6 @@ export interface CreateNewAccountRequest {
   secret: string;
 }
 
-interface WatchBalanceInput {
-  publicKey: string;
-  callback: (balance: object) => void;
-}
-
 export interface SendPaymentRequest {
   secret: string;
   destination: string;
@@ -31,8 +26,8 @@ export interface SendInvoiceRequest {
 }
 
 interface LineItem {
-  description: string
-  amount: number
+  description: string;
+  amount: number;
 }
 
 export interface GenerateKeyPairResult {
