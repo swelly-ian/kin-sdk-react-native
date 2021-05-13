@@ -76,12 +76,12 @@ export const AccountList: VFC = () => {
       db.getAccounts().then(setAccounts);
     }
 
-    KinSDKService.watchBalance(KinEnvironment.Test,
-      "EGuup74bh7gCKGpHHt9UDyc8Ee2KHXNz1wvMr122Jd8Z",
-      (balance) => {
-        console.log('Balance changed for EGuup74bh7gCKGpHHt9UDyc8Ee2KHXNz1wvMr122Jd8Z:', balance)
-      }
-    )
+    // KinSDKService.watchBalance(KinEnvironment.Test,
+    //   "SD4N4VBXDM75L4MM76FPZ77A2UNAZ2KBTM5N6GDSXSN4JJ4WHFXQ7ARG",
+    //   (balance) => {
+    //     console.log('Balance changed for SD4N4VBXDM75L4MM76FPZ77A2UNAZ2KBTM5N6GDSXSN4JJ4WHFXQ7ARG:', balance)
+    //   }
+    // )
 
   }, [accounts]);
 

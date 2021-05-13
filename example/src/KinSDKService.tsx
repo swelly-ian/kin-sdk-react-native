@@ -64,7 +64,7 @@ export class KinSDKService {
         amount: 0.50
       },
     ];
-    return KinSdk.sendInvoice(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
+    return KinSdk.sendInvoicedPayment(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
   }
 
   static watchBalance(env: KinEnvironment, publicKey: string, callback: (balance: object) => void ): void {
