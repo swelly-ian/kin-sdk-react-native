@@ -3,6 +3,7 @@ package com.reactnativekinsdk
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import org.json.JSONObject
 import org.kin.sdk.base.KinAccountContext
 import org.kin.sdk.base.KinAccountContextImpl
@@ -158,8 +159,8 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       }
 
       var appIndex = DEMO_APP_IDX.value
-      if (request.hasKey("app_index") && !request.isNull("app_index")) {
-        appIndex = request.getInt("app_index")
+      if (request.hasKey("appIndex") && !request.isNull("appIndex")) {
+        appIndex = request.getInt("appIndex")
       }
 
       kinAccountContext.sendKinPayment(
@@ -171,7 +172,11 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
           .toKinMemo(),
         Optional.empty()
       ).then({ kinPayment ->
-        val json = JSONObject(Gson().toJson(kinPayment))
+        val customGson = GsonBuilder().registerTypeHierarchyAdapter(
+          ByteArray::class.java,
+          Utils.ByteArrayToBase58TypeAdapter()
+        ).create()
+        val json = JSONObject(customGson.toJson(kinPayment))
         promise.resolve(Utils.convertJsonToMap(json))
       }, {
         promise.reject("Error", it)
@@ -230,7 +235,11 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
         Optional.of(invoice)
       )
         .then({ payment ->
-          val json = JSONObject(Gson().toJson(payment))
+          val customGson = GsonBuilder().registerTypeHierarchyAdapter(
+            ByteArray::class.java,
+            Utils.ByteArrayToBase58TypeAdapter()
+          ).create()
+          val json = JSONObject(customGson.toJson(payment))
           promise.resolve(Utils.convertJsonToMap(json))
         }) { error ->
           promise.reject("Error", error)
