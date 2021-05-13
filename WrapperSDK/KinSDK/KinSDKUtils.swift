@@ -207,10 +207,12 @@ public class KinSDKUtils: NSObject {
     
     static func toDict(_ payment: KinPayment) -> [String:Any] {
         let mirror = Mirror(reflecting: payment)
-        let dict = Dictionary(uniqueKeysWithValues: mirror.children.lazy.map({ (label:String?, value:Any) -> (String, Any)? in
+        var dict = Dictionary(uniqueKeysWithValues: mirror.children.lazy.map({ (label:String?, value:Any) -> (String, Any)? in
             guard let label = label else { return nil }
             return (label, value)
         }).compactMap { $0 })
+        dict["sourceAccountId"] = Base58Swift.Base58.base58Encode(payment.sourceAccountId.asPublicKey().keypair.publicKey.bytes)
+        dict["destAccountId"] = Base58Swift.Base58.base58Encode(payment.destAccountId.asPublicKey().keypair.publicKey.bytes)
         return dict
     }
     

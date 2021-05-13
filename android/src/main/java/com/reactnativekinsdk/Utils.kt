@@ -4,9 +4,12 @@ import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
+import com.google.gson.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.kin.sdk.base.tools.Base58
+import java.lang.reflect.Type
 
 
 object Utils {
@@ -72,5 +75,25 @@ object Utils {
       }
     }
     return array
+  }
+
+  class ByteArrayToBase58TypeAdapter : JsonSerializer<ByteArray?>,
+    JsonDeserializer<ByteArray?> {
+    @Throws(JsonParseException::class)
+    override fun deserialize(
+      json: JsonElement,
+      typeOfT: Type?,
+      context: JsonDeserializationContext?
+    ): ByteArray {
+      return Base58.decode(json.asString)
+    }
+
+    override fun serialize(
+      src: ByteArray?,
+      typeOfSrc: Type?,
+      context: JsonSerializationContext?
+    ): JsonElement {
+      return JsonPrimitive(Base58.encode(src!!))
+    }
   }
 }

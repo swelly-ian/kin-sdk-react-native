@@ -49,22 +49,22 @@ export class KinSDKService {
   submitPayment(secret: string, destination: string, amount: string, memo: string, appIndex: number | null = null): Promise<object> {
     console.log('KinSDKService::submitPayment()', { secret, destination, amount, memo, appIndex});
 
-    // return KinSdk.sendPayment(this.env, { secret, destination, amount, memo, app_index: 1 });
+    return KinSdk.sendPayment(this.env, { secret, destination, amount, memo, appIndex: 0 });
 
     /**
      * paymentType: 2 (Spend)
      */
-    const lineItems = [
-      {
-        description: 'One Hamburger',
-        amount: 2.00
-      },
-      {
-        description: 'Tip the waitress',
-        amount: 0.50
-      },
-    ];
-    return KinSdk.sendInvoicedPayment(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
+    // const lineItems = [
+    //   {
+    //     description: 'One Hamburger',
+    //     amount: 2.00
+    //   },
+    //   {
+    //     description: 'Tip the waitress',
+    //     amount: 0.50
+    //   },
+    // ];
+    // return KinSdk.sendInvoicedPayment(this.env, { secret, lineItems, destination, paymentType: 2, appIndex: 0 });
   }
 
   static watchBalance(env: KinEnvironment, publicKey: string, callback: (balance: object) => void ): void {
