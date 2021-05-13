@@ -97,8 +97,8 @@ public class KinSDKUtils: NSObject {
         }
     }
     
-    @objc(sendInvoice::::)
-    public static func sendInvoice(env: String, request: NSDictionary, resolve: @escaping (NSMutableDictionary) -> Void, reject: @escaping (String, String, NSError) -> Void) {
+    @objc(sendInvoicedPayment::::)
+    public static func sendInvoicedPayment(env: String, request: NSDictionary, resolve: @escaping (NSMutableDictionary) -> Void, reject: @escaping (String, String, NSError) -> Void) {
         
         do {
             let key = try KinAccount.Key(secretSeed: request["secret"] as! String)

@@ -128,7 +128,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
       .useExistingAccount(account)
       .build()
 
-    context.observeBalance(ObservationMode.Passive)
+    context.observeBalance(ObservationMode.Active)
       .add { kinBalance: KinBalance ->
         val json = JSONObject(Gson().toJson(kinBalance))
         callback.invoke(Utils.convertJsonToMap(json))
@@ -183,7 +183,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
   }
 
   @ReactMethod
-  fun sendInvoice(env: String, request: ReadableMap, promise: Promise) {
+  fun sendInvoicedPayment(env: String, request: ReadableMap, promise: Promise) {
     try {
       this.env = env
 

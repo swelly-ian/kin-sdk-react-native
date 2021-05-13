@@ -17,7 +17,7 @@ export interface SendPaymentRequest {
   appIndex: number | null;
 }
 
-export interface SendInvoiceRequest {
+export interface SendInvoicedPaymentRequest {
   secret: string;
   lineItems: Array<LineItem>;
   destination: string;
@@ -62,7 +62,7 @@ export type KinSdkType = {
     input: ResolveTokenAccountsRequest
   ) => Promise<ResolveTokenAccountsResult>;
   sendPayment: (env: KinEnvironment, input: SendPaymentRequest) => Promise<SendPaymentResult>;
-  sendInvoice: (env: KinEnvironment, input: SendInvoiceRequest) => Promise<SendPaymentResult>;
+  sendInvoicedPayment: (env: KinEnvironment, input: SendInvoicedPaymentRequest) => Promise<SendPaymentResult>;
 
   watchBalance: (env: KinEnvironment, publicKey: string, callback: (balance: object) => void) => void;
 };
