@@ -1,6 +1,6 @@
 {
   "name": "@kin-sdk/react-native",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React Native Kin SDK wrapper for the official Android and iOS Kin SDK's",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
