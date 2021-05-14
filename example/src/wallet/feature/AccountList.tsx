@@ -58,9 +58,6 @@ export const AccountList: VFC = () => {
 
   // Step 5: Submit a payment
   const submitPayment = async (account: KinAccount) => {
-    // These values will come from a Form
-    // const destination = "HdVcmxkZiSKhQ4BELUzz7EnxcrB9TMRZHcGg5CcaqbvA";
-    // const destination = 'Don8L4DTVrUrRAcVTsFoCRqei5Mokde3CV3K9Ut4nAGZ';
     const destination = 'AtfVfhHchSM9VKvtdf6wsjkheQ97EpnWWHDruVBC4RSi';
     const amount = '2';
     const memo = 'Test Memo!';
@@ -75,13 +72,6 @@ export const AccountList: VFC = () => {
     if (!accounts) {
       db.getAccounts().then(setAccounts);
     }
-
-    // KinSDKService.watchBalance(KinEnvironment.Test,
-    //   "SD4N4VBXDM75L4MM76FPZ77A2UNAZ2KBTM5N6GDSXSN4JJ4WHFXQ7ARG",
-    //   (balance) => {
-    //     console.log('Balance changed for SD4N4VBXDM75L4MM76FPZ77A2UNAZ2KBTM5N6GDSXSN4JJ4WHFXQ7ARG:', balance)
-    //   }
-    // )
 
   }, [accounts]);
 
