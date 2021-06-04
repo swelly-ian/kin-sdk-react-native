@@ -58,7 +58,7 @@ export const AccountList: VFC = () => {
 
   // Step 5: Submit a payment
   const submitPayment = async (account: KinAccount) => {
-    const destination = 'AtfVfhHchSM9VKvtdf6wsjkheQ97EpnWWHDruVBC4RSi';
+    const destination = 'GBFGRKD4ZT32NQ2QJLRVMBF7RUMFASPQYEZ66TFPZXF6Z4O2RJ3JXY27';
     const amount = '2';
     const memo = 'Test Memo!';
 
@@ -72,7 +72,6 @@ export const AccountList: VFC = () => {
     if (!accounts) {
       db.getAccounts().then(setAccounts);
     }
-
   }, [accounts]);
 
   return (

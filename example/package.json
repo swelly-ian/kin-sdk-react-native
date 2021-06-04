@@ -6,13 +6,14 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start"
+    "start": "react-native start",
+    "build:ios": "react-native bundle --entry-file='index.tsx' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.15.2",
+    "@kin-sdk/react-native": "link:../",
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "react": "16.13.1",
-    "react-native": "0.63.4",
-    "@kin-sdk/react-native": "link:../"
+    "react-native": "0.63.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

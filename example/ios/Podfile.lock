@@ -394,11 +394,11 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
-  - react-native-kin-sdk (0.1.4):
+  - react-native-kin-sdk (0.1.5):
     - KinBase
     - KinDesign
     - KinUX
-    - React-Core
+    - React
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
   - React-RCTAnimation (0.63.4):
@@ -459,7 +459,7 @@ PODS:
     - React-Core (= 0.63.4)
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
-  - RNCAsyncStorage (1.15.2):
+  - RNCAsyncStorage (1.15.5):
     - React-Core
   - Sodium (0.8.0)
   - Yoga (1.14.0)
@@ -482,7 +482,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - "react-native-kin-sdk (from `../node_modules/@kin-sdk/react-native`)"
+  - react-native-kin-sdk (from `../..`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -551,7 +551,7 @@ EXTERNAL SOURCES:
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-kin-sdk:
-    :path: "../node_modules/@kin-sdk/react-native"
+    :path: "../.."
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -612,7 +612,7 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-kin-sdk: a9cc36d5feadb7d80c5db5860c2efe9f76a61711
+  react-native-kin-sdk: f360b84142874ad7e1c828debecd1f618280633e
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -623,10 +623,10 @@ SPEC CHECKSUMS:
   React-RCTText: 5c51df3f08cb9dedc6e790161195d12bac06101c
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
-  RNCAsyncStorage: 9b7605e899f9acb2fba33e87952c529731265453
+  RNCAsyncStorage: 56a3355a10b5d660c48c6e37325ac85ebfd09885
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 6f62cb08fa7e071234a92cef161f70b476cd5f1f
+PODFILE CHECKSUM: 10d23f242fe4005f4d6f372e25468e5dba17ca4a
 
 COCOAPODS: 1.10.1
