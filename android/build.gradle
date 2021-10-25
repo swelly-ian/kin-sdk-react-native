@@ -20,7 +20,7 @@ buildscript {
   ext {
     versions = [:]
 
-    versions.kin = "0.4.5"
+    versions.kin = "2.0.0"
   }
 }
 
@@ -137,12 +137,13 @@ dependencies {
   api 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+  implementation('com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.1')
+
   implementation 'com.google.code.gson:gson:2.8.6'
 
-  implementation "org.kin.sdk.android:base:${versions.kin}"
-  implementation ("org.kin.sdk.android:spend:${versions.kin}") { transitive = false }
-  implementation "org.kin.sdk.android:design:${versions.kin}"
-  implementation ("org.kin.sdk.android:base-compat:${versions.kin}") { transitive = false }
+  implementation ("org.kin.sdk.android:base:${versions.kin}") {
+    exclude module: 'libsodium-jni'
+  }
   implementation 'com.google.android.material:material:1.3.0'
   implementation 'androidx.multidex:multidex:2.0.1'
 }

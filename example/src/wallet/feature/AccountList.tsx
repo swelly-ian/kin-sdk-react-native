@@ -58,7 +58,7 @@ export const AccountList: VFC = () => {
 
   // Step 5: Submit a payment
   const submitPayment = async (account: KinAccount) => {
-    const destination = 'GBFGRKD4ZT32NQ2QJLRVMBF7RUMFASPQYEZ66TFPZXF6Z4O2RJ3JXY27';
+    const destination = 'GA6CCT5IB4DJBR63BM3BQ7WB3M2UZ6QG6Z5XB64GSIABH6ICIETTAVU2';
     const amount = '2';
     const memo = 'Test Memo!';
 

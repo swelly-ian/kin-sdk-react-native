@@ -15,12 +15,10 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
   s.requires_arc = true
-  
+
   s.dependency "React"
   s.swift_version = '5'
-  s.dependency "KinBase"
-  s.dependency "KinUX"
-  s.dependency "KinDesign"
+  s.dependency "KinBase", "~> 2.1.1"
 
   # s.subspec 'no-arc' do |sna|
     #   sna.requires_arc = false

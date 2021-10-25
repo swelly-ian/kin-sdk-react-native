@@ -1,10 +1,8 @@
 import Foundation
 
-import stellarsdk
 import Promises
 
 import KinBase
-import Base58Swift
 
 @objc(KinSdk)
 class KinSdk: NSObject {
@@ -12,7 +10,7 @@ class KinSdk: NSObject {
     private static let enableTestMigration: Bool = true
     private static let useKin2: Bool = false
     
-    private let testEnv = KinEnvironment.Agora.testNet(minApiVersion: 4, useKin2: false, testMigration: false)
+    private let testEnv = KinEnvironment.Agora.testNet(minApiVersion: 4)
     private let prodEnv = KinEnvironment.Agora.mainNet(minApiVersion: 4)
     
     private var watchContext: KinAccountContext! = nil
@@ -25,55 +23,42 @@ class KinSdk: NSObject {
         }
     }
     
-    func kinAccount(_ accountId: String) -> KinAccount.Id {
-        guard let bytes = Base58Swift.Base58.base58Decode(accountId) else { return KinAccount.Id(accountId) }
-        
-        do {
-            let publicKey = try PublicKey(bytes)
-            return KinAccount.Id(publicKey.accountId)
-        } catch {
-            return KinAccount.Id(accountId)
-        }
+    func kinAccount(_ accountId: String) -> PublicKey {
+        return PublicKey(base58: accountId) ?? PublicKey(stellarID: accountId)!
     }
     
     @objc(generateRandomKeyPair:withRejecter:)
     func generateRandomKeyPair(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        do {
-            let key = try KeyPair.generateRandomKeyPair()
-            let result: NSMutableDictionary = [:]
-            result["secret"] = key.secretSeed
-            result["publicKey"] = Base58Swift.Base58.base58Encode(key.publicKey.bytes)
-            resolve(result)
-        } catch {
-            reject("no_events", "There were no events", error as NSError)
-        }
+        let key = KeyPair.generate()
+        let result: NSMutableDictionary = [:]
+        result["secret"] = key?.seed?.base58
+        result["publicKey"] = key?.publicKey.base58
+        
+        resolve(result)
     }
     
-    @objc(createNewAccount:withAccount:withResolver:withRejecter:)
-    func createNewAccount(env: String, account: NSDictionary, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        do {
-            let key = try KinAccount.Key(secretSeed: account["secret"] as! String)
-            guard let context = (try? KinAccountContext
-                    .Builder(env: getEnv(env: env))
-                    .importExistingPrivateKey(key)
-                    .build()) else {
-                resolve(false)
-                return
-            }
-            self.watchContext = context
-        } catch {
-            reject("event_failure", "", error)
+    @objc(createNewAccount:withInput:withResolver:withRejecter:)
+    func createNewAccount(env: String, input: NSDictionary, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        let seed = Seed(base58: input["secret"] as! String)!
+        let key = KeyPair(seed: seed)
+        guard let context = (try? KinAccountContext
+                .Builder(env: getEnv(env: env))
+                .importExistingPrivateKey(key)
+                .build()) else {
+            resolve(false)
             return
         }
+        self.watchContext = context
         
         resolve(true)
     }
     
-    @objc(sendPayment:withRequest:withResolver:withRejecter:)
-    func sendPayment(env: String, request: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(sendPayment:withInput:withResolver:withRejecter:)
+    func sendPayment(env: String, input: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         
         do {
-            let key = try KinAccount.Key(secretSeed: request["secret"] as! String)
+            let seed = Seed(base58: input["secret"] as! String)!
+            let key = KeyPair(seed: seed)
             
             let env = getEnv(env: env)
             let accountContext = try KinAccountContext
@@ -81,13 +66,13 @@ class KinSdk: NSObject {
                 .importExistingPrivateKey(key)
                 .build()
             
-            guard let amount = Kin(string: request["amount"] as! String) else {
+            guard let amount = Kin(string: input["amount"] as! String) else {
                 reject("Error", "invalid amount", NSError())
                 return
             }
             
-            let item = KinPaymentItem(amount: amount, destAccountId: kinAccount(request["destination"] as! String))
-            accountContext.sendKinPayment(item, memo: KinMemo(text: request["memo"] as? String ?? ""))
+            let item = KinPaymentItem(amount: amount, destAccount: kinAccount(input["destination"] as! String))
+            accountContext.sendKinPayment(item, memo: KinMemo(text: input["memo"] as? String ?? ""))
                 .then(on: .main) {payment in
                     resolve((self.toDict(payment) as NSDictionary).mutableCopy() as! NSMutableDictionary)
                 }
@@ -100,11 +85,12 @@ class KinSdk: NSObject {
         }
     }
     
-    @objc(sendInvoicedPayment:withRequest:withResolver:withRejecter:)
-    func sendInvoicedPayment(env: String, request: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(sendInvoicedPayment:withInput:withResolver:withRejecter:)
+    func sendInvoicedPayment(env: String, input: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         
         do {
-            let key = try KinAccount.Key(secretSeed: request["secret"] as! String)
+            let seed = Seed(base58: input["secret"] as! String)!
+            let key = KeyPair(seed: seed)
             
             let env = getEnv(env: env)
             let accountContext = try KinAccountContext
@@ -113,11 +99,11 @@ class KinSdk: NSObject {
                 .build()
             
             var appIndex: AppIndex = .init(value: 0)
-            if let index = request["appIndex"] as? Int {
+            if let index = input["appIndex"] as? Int {
                 appIndex = .init(value: UInt16(index))
             }
             
-            let requestItems = request["lineItems"] as! NSArray
+            let requestItems = input["lineItems"] as! NSArray
             var lineItems: [LineItem] = []
             for item in requestItems {
                 let requestItem = item as! [String: Any]
@@ -131,7 +117,7 @@ class KinSdk: NSObject {
                 lineItems.append(try LineItem(title: itemDes, amount: amount))
             }
             
-            accountContext.payInvoice(processingAppIdx: appIndex, destinationAccount: kinAccount(request["destination"] as! String), invoice: try Invoice(lineItems: lineItems))
+            accountContext.payInvoice(processingAppIdx: appIndex, destinationAccount: kinAccount(input["destination"] as! String), invoice: try Invoice(lineItems: lineItems))
                 .then(on: .main) {payment in
                     resolve((self.toDict(payment) as NSDictionary).mutableCopy() as! NSMutableDictionary)
                 }
@@ -145,10 +131,10 @@ class KinSdk: NSObject {
         }
     }
     
-    @objc(resolveTokenAccounts:withAccount:withResolver:withRejecter:)
-    func resolveTokenAccounts(env: String, account: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(resolveTokenAccounts:withInput:withResolver:withRejecter:)
+    func resolveTokenAccounts(env: String, input: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         let env = getEnv(env: env)
-        guard let publicKey = account["publicKey"] as? String else {
+        guard let publicKey = input["publicKey"] as? String else {
             reject("Error", "invalid publicKey", NSError())
             return
         }
@@ -161,7 +147,7 @@ class KinSdk: NSObject {
         accountContext.getAccount(forceUpdate: true)
             .then { account in
                 let result: NSMutableDictionary = [:]
-                result["address"] = account.id
+                result["address"] = account.publicKey.base58
                 result["balance"] = "\(account.balance.amount)"
                 resolve(result)
             }.catch {error in
@@ -169,15 +155,19 @@ class KinSdk: NSObject {
             }
     }
     
-    @objc(requestAirdrop:withRequest:withResolver:withRejecter:)
-    func requestAirdrop(env: String, request: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        guard let publicKey = request["publicKey"] as? String else {
+    @objc(requestAirdrop:withInput:withResolver:withRejecter:)
+    func requestAirdrop(env: String, input: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        guard let publicKey = input["publicKey"] as? String else {
             reject("Error", "invalid publicKey", NSError())
+            return
+        }
+        guard let amount = input["amount"] as? String else {
+            reject("Error", "invalid amount", NSError())
             return
         }
         let key = kinAccount(publicKey)
         let env = getEnv(env: env)
-        env.testService!.fundAccount(key)
+        env.testService!.fundAccount(key, amount: Decimal(string: amount)!)
             .then { _ in
                 print("fundAccount: funded")
                 resolve(true)
@@ -204,8 +194,8 @@ class KinSdk: NSObject {
             guard let label = label else { return nil }
             return (label, value)
         }).compactMap { $0 })
-        dict["sourceAccountId"] = Base58Swift.Base58.base58Encode(payment.sourceAccountId.asPublicKey().keypair.publicKey.bytes)
-        dict["destAccountId"] = Base58Swift.Base58.base58Encode(payment.destAccountId.asPublicKey().keypair.publicKey.bytes)
+        dict["sourceAccountId"] = payment.sourceAccount.base58
+        dict["destAccountId"] = payment.destAccount.base58
         return dict
     }
     

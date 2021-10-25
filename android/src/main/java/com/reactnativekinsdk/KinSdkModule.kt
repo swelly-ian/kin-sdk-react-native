@@ -298,7 +298,7 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
 
   private val testKinEnvironment: KinEnvironment.Agora by lazy {
-    KinEnvironment.Agora.Builder(if (env == "Test") NetworkEnvironment.KinStellarTestNetKin3 else NetworkEnvironment.KinStellarMainNetKin3)
+    KinEnvironment.Agora.Builder(if (env == "Test") NetworkEnvironment.TestNet else NetworkEnvironment.MainNet)
       .setAppInfoProvider(object : AppInfoProvider {
         override val appInfo: AppInfo =
           AppInfo(
@@ -312,76 +312,10 @@ class KinSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJava
           return AppUserCreds("demo_app_uid", "demo_app_user_passkey")
         }
       })
-      .setMinApiVersion(4)
-      .testMigration()
-      .setEnableLogging()
       .setStorage(KinFileStorage.Builder("${reactContext.filesDir}/kin"))
       .build()
       .apply {
         Log.d("testKinEnvironment", "built")
-        addDefaultInvoices(invoiceRepository)
       }
   }
-
-  private fun addDefaultInvoices(invoiceRepository: InvoiceRepository) {
-    val invoice1 = Invoice.Builder().apply {
-      addLineItem(
-        LineItem.Builder("Boombox Badger Sticker", KinAmount(25))
-          .setDescription("Let's Jam!")
-          .setSKU(SKU(UUID.fromString("8b154ad6-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-      addLineItem(
-        LineItem.Builder("Relaxer Badger Sticker", KinAmount(25))
-          .setDescription("#HammockLife")
-          .setSKU(SKU(UUID.fromString("964d1730-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-      addLineItem(
-        LineItem.Builder("Classic Badger Sticker", KinAmount(25))
-          .setDescription("Nothing beats the original")
-          .setSKU(SKU(UUID.fromString("cc081bd6-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-    }.build()
-
-    val invoice2 = Invoice.Builder().apply {
-      addLineItem(
-        LineItem.Builder("Fancy Tunic of Defence", KinAmount(42))
-          .setDescription("+40 Defence, -9000 Style")
-          .setSKU(SKU(UUID.fromString("a1b4a796-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-      addLineItem(
-        LineItem.Builder("Wizard Hat", KinAmount(99)).setDescription("+999 Mana")
-          .setSKU(SKU(UUID.fromString("a911cae6-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-    }.build()
-
-    val invoice3 = Invoice.Builder().apply {
-      addLineItem(
-        LineItem.Builder("Start a Chat", KinAmount(50))
-          .setSKU(SKU(UUID.fromString("cfe1f0b0-dab8-11ea-87d0-0242ac130003").toByteArray()))
-          .build()
-      )
-    }.build()
-
-    val invoice4 = Invoice.Builder().apply {
-      addLineItem(
-        LineItem.Builder("Thing", KinAmount(1))
-          .setDescription("That does stuff")
-          .setSKU(SKU(UUID.fromString("dac0b678-a936-44ef-abc8-365f4cae2ed1").toByteArray()))
-          .build()
-      )
-    }.build()
-
-    org.kin.sdk.base.tools.Promise.allAny(
-      invoiceRepository.addInvoice(invoice1),
-      invoiceRepository.addInvoice(invoice2),
-      invoiceRepository.addInvoice(invoice3),
-      invoiceRepository.addInvoice(invoice4)
-    ).resolve()
-  }
-
 }

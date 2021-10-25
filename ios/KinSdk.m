@@ -10,27 +10,27 @@ RCT_EXTERN_METHOD(generateRandomKeyPair:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(createNewAccount: (NSString *)env
-                  withAccount: (NSDictionary *)account
+                  withInput: (NSDictionary *)input
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(resolveTokenAccounts: (NSString *)env
-                  withAccount: (NSDictionary *)account
+                  withInput: (NSDictionary *)input
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(sendPayment: (NSString *)env
-                  withRequest: (NSDictionary *)request
+                  withInput: (NSDictionary *)input
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(sendInvoicedPayment: (NSString *)env
-                  withRequest: (NSDictionary *)request
+                  withInput: (NSDictionary *)input
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(requestAirdrop: (NSString *)env
-                  withRequest: (NSDictionary *)request
+                  withInput: (NSDictionary *)input
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
